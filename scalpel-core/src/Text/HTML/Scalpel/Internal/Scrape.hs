@@ -1,4 +1,5 @@
 {-# OPTIONS_HADDOCK hide #-}
+{-# LANGUAGE CPP #-}
 module Text.HTML.Scalpel.Internal.Scrape (
     Scraper (..)
 ,   scrape
@@ -51,7 +52,9 @@ instance Alternative (Scraper str) where
                           | otherwise             = b tags
 
 instance Monad (Scraper str) where
+#if !MIN_VERSION_base(4,13,0)
     fail = Fail.fail
+#endif
     return = pure
     (MkScraper a) >>= f = MkScraper combined
         where combined tags | (Just aVal) <- a tags = let (MkScraper b) = f aVal
